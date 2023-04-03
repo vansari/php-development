@@ -16,7 +16,7 @@
     ],
     "scripts": {
         "post-create-project-cmd": [
-            "tmpl/post-create-project.php"
+            "execute-post-create.sh"
         ]
     }
 }
