@@ -40,7 +40,7 @@ function replaceCustoms($target, array $replaces)
 
 foreach (glob('tmpl/files/*', GLOB_BRACE) as $distFile) {
     $target = false === strpos($distFile, '-dist')
-        ? pathinfo($distFile, PATHINFO_FILENAME)
+        ? pathinfo($distFile, PATHINFO_BASENAME)
         : substr(pathinfo($distFile, PATHINFO_FILENAME), -5) . pathinfo($distFile, PATHINFO_EXTENSION);
     echo "Copy $distFile to $target..." . PHP_EOL;
     copy($distFile, $target);
