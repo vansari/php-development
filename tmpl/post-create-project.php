@@ -56,7 +56,7 @@ mkdir('tests');
 function removeTemplate($path)
 {
     foreach (glob($path . '/*') as $value) {
-        if (in_array($value, ['.', '..'])) {
+        if (in_array($value, ['.', '..']) && !preg_match('/^\.\w+$/', $value)) {
             continue;
         }
         is_dir($value) ? removeTemplate($value) : unlink($value);
