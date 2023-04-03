@@ -42,8 +42,9 @@ foreach (glob('tmpl/files/*', GLOB_BRACE) as $distFile) {
     $target = false === strpos($distFile, '-dist')
         ? pathinfo($distFile, PATHINFO_BASENAME)
         : substr(pathinfo($distFile, PATHINFO_FILENAME), 0, -5) . '.' . pathinfo($distFile, PATHINFO_EXTENSION);
-    echo "Copy $distFile to $target..." . PHP_EOL;
-    copy($distFile, $target);
+
+    echo "Move $distFile to $target..." . PHP_EOL;
+    rename($distFile, $target);
 
     echo "Preparing defaults file $target..." . PHP_EOL;
     replaceCustoms($target, $replaces);
@@ -56,7 +57,7 @@ mkdir('tests');
 function removeTemplate($path)
 {
     foreach (glob($path . '/*') as $value) {
-        if (in_array($value, ['.', '..']) && !preg_match('/^\.\w+$/', $value)) {
+        if (in_array($value, ['.', '..'])) {
             continue;
         }
         is_dir($value) ? removeTemplate($value) : unlink($value);
