@@ -42,9 +42,10 @@ foreach (glob('tmpl/files/*', GLOB_BRACE) as $distFile) {
     $target = false === strpos('-dist', $distFile)
         ? $distFile
         : substr(pathinfo($distFile, PATHINFO_FILENAME), -5) . pathinfo($distFile, PATHINFO_EXTENSION);
+    echo "Copy $distFile to $target..." . PHP_EOL;
     copy($distFile, $target);
 
-    echo "Preparing defaults files..." . PHP_EOL;
+    echo "Preparing defaults file $target..." . PHP_EOL;
     replaceCustoms($target, $replaces);
 }
 
@@ -67,7 +68,7 @@ function removeTemplate($path)
     rmdir($path);
 }
 
-echo "checking docker...";
+echo "checking docker..." . PHP_EOL;
 exec('docker --version', $out, $code);
 if (0 !== $code) {
     echo "It is recommended that you have installed docker.";
@@ -77,7 +78,7 @@ if (0 !== $code) {
     echo "It is recommended that you have installed docker-compose.";
 }
 
-echo "Project setup finished...";
+echo "Project setup finished..." . PHP_EOL;
 
 echo "Removing template files..." . PHP_EOL;
 removeTemplate('tmpl');
