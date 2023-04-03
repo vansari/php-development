@@ -38,7 +38,7 @@ function replaceCustoms($target, array $replaces)
     );
 }
 
-foreach (glob('tmpl/files/{,.}*', GLOB_BRACE) as $distFile) {
+foreach (glob('tmpl/files/*', GLOB_BRACE) as $distFile) {
     $target = false === strpos($distFile, '-dist')
         ? pathinfo($distFile, PATHINFO_BASENAME)
         : substr(pathinfo($distFile, PATHINFO_FILENAME), 0, -5) . '.' . pathinfo($distFile, PATHINFO_EXTENSION);
@@ -56,7 +56,7 @@ mkdir('tests');
 
 function removeTemplate($path)
 {
-    foreach (glob($path . '/{,.}*', GLOB_BRACE) as $value) {
+    foreach (glob($path . '/*', GLOB_BRACE) as $value) {
         if (in_array($value, ['.', '..'])) {
             continue;
         }
