@@ -13,5 +13,10 @@
             "name": "vansari",
             "email": "kurt.junker@posteo.de"
         }
-    ]
+    ],
+    "scripts": {
+        "post-create-project-cmd": [
+            "tmpl/post-create-project.php"
+        ]
+    }
 }

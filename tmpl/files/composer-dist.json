@@ -26,6 +26,16 @@
         "overtrue/phplint": "9.*",
         "squizlabs/php_codesniffer": "3.*"
     },
+    "scripts": {
+        "lint": "vendor/bin/phplint",
+        "cs": "vendor/bin/phpcs --standard=PSR12 --extensions=php .",
+        "unit": "vendor/bin/phpunit",
+        "test": [
+            "@lint",
+            "@cs",
+            "@@unit"
+        ]
+    },
     "config": {
         "platform": {
             "php": "8.2"
