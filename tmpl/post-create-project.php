@@ -55,20 +55,17 @@ mkdir('tests');
 
 function removeTemplate($path)
 {
-    $scannedFiles = scandir($path);
-    if (false === $scannedFiles) {
-        return;
-    }
-
-    $files = array_diff($scannedFiles, ['.', '..']);
-    foreach ($files as $value) {
+    foreach (glob($path . '/*') as $value) {
+        if (in_array($value, ['.', '..'])) {
+            continue;
+        }
         is_dir($value) ? removeTemplate($value) : unlink($value);
     }
 
     rmdir($path);
 }
 
-echo "checking docker..." . PHP_EOL;
+echo "Checking docker..." . PHP_EOL;
 exec('docker --version', $out, $code);
 if (0 !== $code) {
     echo "It is recommended that you have installed docker.";
