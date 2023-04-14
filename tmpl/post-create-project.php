@@ -46,6 +46,7 @@ function replaceCustoms($target, array $replaces)
         return;
     }
 
+    echo "Preparing defaults file $target..." . PHP_EOL;
     file_put_contents(
         $target,
         strtr(
@@ -71,7 +72,6 @@ foreach (glob('tmpl/files/*', GLOB_BRACE) as $distFile) {
         rename($oldTarget, $target);
     }
 
-    echo "Preparing defaults file $target..." . PHP_EOL;
     replaceCustoms($target, $replaces);
 }
 
