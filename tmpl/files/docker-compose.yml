@@ -1,4 +1,4 @@
-version: "3"
+version: "3.8"
 
 volumes:
   warenkorb_mysql:
@@ -12,7 +12,8 @@ services:
   php:
     build:
       dockerfile: Dockerfile
-      context: ..
+      context: .
+      target: cli
       args:
         PHP_VERSION: '8.2'
     volumes:
@@ -24,7 +25,8 @@ services:
   fpm:
     build:
       dockerfile: Dockerfile
-      context: ..
+      context: .
+      target: fpm
       args:
         PHP_VERSION: '8.2'
     volumes:
