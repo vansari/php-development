@@ -57,7 +57,11 @@ foreach (glob('tmpl/files/*', GLOB_BRACE) as $distFile) {
     rename($distFile, $target);
 
     if (array_key_exists($target, $filenameReplaces)) {
-        rename($target, $filenameReplaces[$target]);
+        $oldTarget = $target;
+        $target = $filenameReplaces[$target];
+
+        echo "Move $oldTarget to $target..." . PHP_EOL;
+        rename($oldTarget, $target);
     }
 
     echo "Preparing defaults file $target..." . PHP_EOL;
