@@ -40,8 +40,8 @@ services:
   nginx:
     image: nginx:latest
     ports:
-      - "80:80"
-      - "443:443"
+      - "8080:80"
+      - "8443:443"
     volumes:
       - ./public:/var/www
       - ./docker/nginx/conf:/etc/nginx/conf.d
