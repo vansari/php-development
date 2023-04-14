@@ -21,6 +21,8 @@ services:
     networks:
       - backend
       - database
+    profiles:
+      - tools
 
   fpm:
     build:
