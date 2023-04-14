@@ -42,7 +42,7 @@ exec (
     . 'apt-get update && apt-get install -y openssl'
     . ' && openssl req -new -newkey rsa:4096 -days 3650 -nodes -x509 '
     . '-subj "/C=US/ST=NC/L=Local/O=Dev/CN='. $hostname .'" -keyout ./'. $hostname .'.key -out ./'. $hostname .'.crt'
-    . ' && openssl dhparam -out ./dhparam.pem 4096"'
+    . ' && openssl dhparam -out ./dhparam.pem 2048"'
 );
 
 function replaceCustoms($target, array $replaces)
