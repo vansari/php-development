@@ -22,6 +22,15 @@ echo "Composer Name is: $vendor/$project" . PHP_EOL;
 echo "Description is: $description" . PHP_EOL;
 
 $hostname = readline('Please enter your local dev hostname: ');
+if (
+    (
+        preg_match('/^www/', $hostname)
+        && !preg_match('/(\w+\.)+\w+$/', explode('.', $hostname, 2))
+    )
+    || !preg_match('/(\w+\.\w+)+/', $hostname)
+) {
+    exit('Please enter a valid hostname with a tld.');
+}
 $mail = readline('Please enter a valid mail for SSL Certs: ');
 
 $replaces = [
