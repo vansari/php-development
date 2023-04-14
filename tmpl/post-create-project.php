@@ -21,10 +21,20 @@ echo "Project is: $project" . PHP_EOL;
 echo "Composer Name is: $vendor/$project" . PHP_EOL;
 echo "Description is: $description" . PHP_EOL;
 
+$hostname = readline('Please enter your local dev hostname: ');
+$mail = readline('Please enter a valid mail for SSL Certs: ');
+
 $replaces = [
     '{{ vendor }}' => $vendor,
     '{{ project }}' => $project,
     '{{ description }}' => $description,
+    '{{ hostname }}' => $hostname,
+    '{{ email }}' => $mail,
+];
+
+$filenameReplaces = [
+    'editorconfig' => '.editorconfig',
+    'env' => '.env',
 ];
 
 function replaceCustoms($target, array $replaces)
@@ -46,11 +56,16 @@ foreach (glob('tmpl/files/*', GLOB_BRACE) as $distFile) {
     echo "Move $distFile to $target..." . PHP_EOL;
     rename($distFile, $target);
 
+    if (array_key_exists($target, $filenameReplaces)) {
+        rename($target, $filenameReplaces[$target]);
+    }
+
     echo "Preparing defaults file $target..." . PHP_EOL;
     replaceCustoms($target, $replaces);
 }
 
-echo "Creating src/ and tests/ directory" . PHP_EOL;
+echo "Creating public/ src/ and tests/ directory" . PHP_EOL;
+mkdir('public');
 mkdir('src');
 mkdir('tests');
 
@@ -68,15 +83,21 @@ function removeTemplate($path)
 
 echo "Checking docker..." . PHP_EOL;
 exec('docker --version', $out, $code);
-if (0 !== $code) {
+$dockerInstalled = 0 === $code;
+if (!$dockerInstalled) {
     echo "It is recommended that you have installed docker.";
 }
 exec('docker-compose --version', $out, $code);
-if (0 !== $code) {
+$dockerComposeInstalled = 0 === $code;
+
+if (!$dockerComposeInstalled) {
     echo "It is recommended that you have installed docker-compose.";
 }
 
-echo "Project setup finished..." . PHP_EOL;
+if ($dockerInstalled && $dockerComposeInstalled) {
+    exec('./init-letsencrypt.sh');
+}
 
+echo "Project setup finished..." . PHP_EOL;
 echo "Removing template files..." . PHP_EOL;
 removeTemplate('tmpl');

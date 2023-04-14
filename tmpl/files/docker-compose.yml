@@ -1,10 +1,70 @@
 version: "3"
+
+volumes:
+  warenkorb_mysql:
+
+networks:
+  database:
+  backend:
+  frontend:
+
 services:
   php:
     build:
       dockerfile: Dockerfile
       context: ..
       args:
-        PHP_VERSION: '8.1'
+        PHP_VERSION: '8.2'
     volumes:
       - './:/code'
+    networks:
+      - backend
+      - database
+
+  fpm:
+    build:
+      dockerfile: Dockerfile
+      context: ..
+      args:
+        PHP_VERSION: '8.2'
+    volumes:
+      - './:/code'
+    networks:
+      - backend
+      - database
+
+  web:
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./public:/var/www
+      - ./docker/nginx:/etc/nginx/conf.d
+      - ./docker/certbot/conf:/etc/letsencrypt
+      - ./docker/certbot/www:/var/www/certbot
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    networks:
+      - backend
+      - frontend
+
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./docker/certbot/conf:/etc/letsencrypt
+      - ./docker/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    networks:
+      - backend
+
+  database:
+    image: mariadb:10
+    environment:
+      MARIADB_DATABASE: ${DATABASE_DBNAME}
+      MARIADB_USER: ${DATABASE_USER}
+      MARIADB_PASSWORD: ${DATABASE_PASS}
+      MARIADB_ROOT_PASSWORD: ${DATABASE_ROOT_PASS}
+    volumes:
+      - warenkorb_mysql:/var/lib/mysql
+    networks:
+      - database
