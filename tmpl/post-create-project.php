@@ -43,6 +43,7 @@ function replaceCustoms($target, array $replaces)
         foreach (glob($target.'/*') as $files) {
             replaceCustoms($files, $replaces);
         }
+        return;
     }
 
     file_put_contents(
