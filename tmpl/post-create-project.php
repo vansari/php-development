@@ -39,6 +39,12 @@ $filenameReplaces = [
 
 function replaceCustoms($target, array $replaces)
 {
+    if (is_dir($target)) {
+        foreach (glob($target.'/*') as $files) {
+            replaceCustoms($files, $replaces);
+        }
+    }
+
     file_put_contents(
         $target,
         strtr(
@@ -56,7 +62,7 @@ foreach (glob('tmpl/files/*', GLOB_BRACE) as $distFile) {
     echo "Move $distFile to $target..." . PHP_EOL;
     rename($distFile, $target);
 
-    if (array_key_exists($target, $filenameReplaces)) {
+    if (is_file($target) && array_key_exists($target, $filenameReplaces)) {
         $oldTarget = $target;
         $target = $filenameReplaces[$target];
 
