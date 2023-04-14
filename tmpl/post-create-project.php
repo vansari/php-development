@@ -22,15 +22,6 @@ echo "Composer Name is: $vendor/$project" . PHP_EOL;
 echo "Description is: $description" . PHP_EOL;
 
 $hostname = readline('Please enter your local dev hostname: ');
-if (
-    (
-        preg_match('/^www/', $hostname)
-        && !preg_match('/(\w+\.)+\w+$/', explode('.', $hostname, 2))
-    )
-    || !preg_match('/(\w+\.\w+)+/', $hostname)
-) {
-    exit('Please enter a valid hostname with a tld.');
-}
 $mail = readline('Please enter a valid mail for SSL Certs: ');
 
 $replaces = [
@@ -45,6 +36,14 @@ $filenameReplaces = [
     'editorconfig' => '.editorconfig',
     'env' => '.env',
 ];
+
+exec (
+    'docker run --rm -v $(pwd)/tmpl/files/docker/nginx/etc/certs:/tmp/certs -w /tmp/certs debian:latest '
+    . 'apt-get update && apt-get install -y openssl'
+    . ' && openssl req -new -newkey rsa:4096 -days 3650 -nodes -x509 '
+    . '-subj "/C=US/ST=NC/L=Local/O=Dev/CN='. $hostname .'" -keyout ./'. $hostname .'.key -out ./'. $hostname .'.crt'
+    . ' && openssl dhparam -out ./dhparam.pem 4096'
+);
 
 function replaceCustoms($target, array $replaces)
 {
@@ -112,10 +111,6 @@ $dockerComposeInstalled = 0 === $code;
 
 if (!$dockerComposeInstalled) {
     echo "It is recommended that you have installed docker-compose.";
-}
-
-if ($dockerInstalled && $dockerComposeInstalled) {
-    exec('./init-letsencrypt.sh');
 }
 
 echo "Project setup finished..." . PHP_EOL;

@@ -40,22 +40,11 @@ services:
       - "443:443"
     volumes:
       - ./public:/var/www
-      - ./docker/nginx:/etc/nginx/conf.d
-      - ./docker/certbot/conf:/etc/letsencrypt
-      - ./docker/certbot/www:/var/www/certbot
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+      - ./docker/nginx/conf:/etc/nginx/conf.d
+      - ./docker/nginx/etc/certs:/etc/nginx/ssl
     networks:
       - backend
       - frontend
-
-  certbot:
-    image: certbot/certbot
-    volumes:
-      - ./docker/certbot/conf:/etc/letsencrypt
-      - ./docker/certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-    networks:
-      - backend
 
   database:
     image: mariadb:10
